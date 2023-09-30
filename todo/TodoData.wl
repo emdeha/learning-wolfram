@@ -7,15 +7,26 @@ ClearTodos::usage = "ClearTodos[] clears all to-do items.";
 
 Begin["`Private`"];
 
-todos = {};
+cloudObject = CloudObject["todos"];
 
-AddTodo[item_String] := AppendTo[todos, item];
+If[Quiet[CloudObjectInformation[cloudObject], CloudObject::cloudnf] =!= $Failed,
+    (* If exists, retrieve todos from cloud storage *)
+    todos = Quiet[CloudGet[cloudObject], CloudObject::nffil];
+    If[!ListQ[todos], todos = {}],
+    (* If not exists, initialize todos as an empty list *)
+    todos = {}
+];
+
+(* Save todos to cloud storage *)
+saveToCloud[] := CloudSave[todos, cloudObject];
+
+AddTodo[item_String] := (AppendTo[todos, item]; saveToCloud[]);
 
 GetTodos[] := todos;
 
-RemoveTodo[index_Integer] /; 1 <= index <= Length[todos] := todos = Delete[todos, index];
+RemoveTodo[index_Integer] /; 1 <= index <= Length[todos] := (todos = Delete[todos, index]; saveToCloud[]);
 
-ClearTodos[] := (todos = {});
+ClearTodos[] := (todos = {}; saveToCloud[]);
 
 End[];
 
