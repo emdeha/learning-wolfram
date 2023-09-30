@@ -1,12 +1,9 @@
 BeginPackage["TodoCLI`", {"TodoData`"}];
 
-(* Public functions *)
 StartTodoCLI::usage = "StartTodoCLI[] starts the to-do CLI app.";
 
-(* Private functions *)
 Begin["`Private`"];
 
-(* Display the main menu and handle user input *)
 mainMenu[] := Module[{choice = 0},
   While[choice != 4,
     Print["Todo CLI App"];
@@ -25,7 +22,6 @@ mainMenu[] := Module[{choice = 0},
   ];
 ];
 
-(* Display the list of to-do items *)
 viewTodos[] := Module[{},
   Print["Todos:"];
   If[Length[GetTodos[]] == 0,
@@ -34,14 +30,12 @@ viewTodos[] := Module[{},
   ];
 ];
 
-(* Add a new to-do item through CLI *)
 addTodoCLI[] := Module[{item},
   item = InputString["Enter the new todo: "];
   AddTodo[item];
   Print["Todo added!"];
 ];
 
-(* Remove a to-do item through CLI *)
 removeTodoCLI[] := Module[{index},
   viewTodos[];
   index = Input["Enter the index of the todo to remove: "];
@@ -52,7 +46,6 @@ removeTodoCLI[] := Module[{index},
   ];
 ];
 
-(* Start the CLI app *)
 StartTodoCLI[] := mainMenu[];
 
 End[];

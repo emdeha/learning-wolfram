@@ -7,6 +7,11 @@ Begin["`Private`"];
 RunTests[tests_List] := Module[{report},
   report = TestReport[tests];
 
+  PrintSummary[report];
+  PrintFailures[report];
+];
+
+PrintSummary[report_] := Module[{resultsByOutcome, successCount, failure, totalCount},
   resultsByOutcome = report["ResultsByOutcome"];
   successCount = Length[resultsByOutcome["Success"]];
   failureCount = Length[resultsByOutcome["Failure"]];
@@ -19,12 +24,13 @@ RunTests[tests_List] := Module[{report},
   Print["| Failure   | ", StringPadRight[ToString[failureCount], 18], "|"];
   Print["| Total     | ", StringPadRight[ToString[totalCount], 18], "|"];
   Print["---------------------------------"];
+];
 
+PrintFailures[report_] := Module[{failures},
+  failures = report["ResultsByOutcome"]["Failure"];
 
-  If[failureCount > 0,
+  If[Length[failures] > 0,
     Print["\nFailed tests:"];
-
-    failures = resultsByOutcome["Failure"];
 
     Do[
       failure = failures[[i]];
@@ -34,8 +40,6 @@ RunTests[tests_List] := Module[{report},
       {i, Length[failures]}
     ]
   ];
-
-  report
 ];
 
 End[];
