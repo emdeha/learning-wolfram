@@ -1,3 +1,4 @@
 Get["TodoUI`"];
+Get["Deployment`"];
 
-StartTodoCLI[]
+DeployTodoApp[CreateTodoWebApp[]];
