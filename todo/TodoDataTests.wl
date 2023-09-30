@@ -1,5 +1,7 @@
 BeginPackage["TodoDataTests`", {"TodoData`"}];
 
+Get["TestHarness`"];
+
 (* Public functions *)
 RunTodoDataTests::usage = "RunTodoDataTests[] runs all the data tests for the to-do app and returns a report.";
 
@@ -27,45 +29,11 @@ testClearTodos = VerificationTest[
   TestID -> "clear todos"
 ];
 
-RunTodoDataTests[] := Module[{report, successCount, failureCount, totalCount, failedTests},
-  report = TestReport[
-    {
-      testAddTodo,
-      testRemoveTodo,
-      testClearTodos
-    }
-  ];
-
-  resultsByOutcome = report["ResultsByOutcome"];
-  successCount = Length[resultsByOutcome["Success"]];
-  failureCount = Length[resultsByOutcome["Failure"]];
-  totalCount = successCount + failureCount;
-  
-  Print["---------------------------------"];
-  Print["| Outcome   | Count             |"];
-  Print["---------------------------------"];
-  Print["| Success   | ", StringPadRight[ToString[successCount], 18], "|"];
-  Print["| Failure   | ", StringPadRight[ToString[failureCount], 18], "|"];
-  Print["| Total     | ", StringPadRight[ToString[totalCount], 18], "|"];
-  Print["---------------------------------"];
-
-
-  If[failureCount > 0,
-    Print["\nFailed tests:"];
-
-    failures = resultsByOutcome["Failure"];
-
-    Do[
-      failure = failures[[i]];
-      Print[
-        "\t", failure["TestID"], "; Expected: ", failure["ExpectedOutput"], "; Actual: ", failure["ActualOutput"]
-      ],
-      {i, Length[failures]}
-    ]
-  ];
-
-  report
-];
+RunTodoDataTests[] := TestHarness`RunTests[{
+  testAddTodo,
+  testRemoveTodo,
+  testClearTodos
+}];
 
 End[];
 
